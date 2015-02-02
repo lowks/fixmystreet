@@ -452,7 +452,8 @@ create table admin_log (
     action text not null,
     whenedited timestamp not null default ms_current_timestamp(),
     user_id int references users(id) null,
-    reason text not null default ''
+    reason text not null default '',
+    time_spent int not null default 0
 ); 
 
 create table moderation_original_data (
@@ -489,6 +490,5 @@ create table response_templates (
     title text not null,
     text text not null,
     created timestamp not null default ms_current_timestamp(),
-    whenedited timestamp not null, 
     unique(body_id, title)
 );
