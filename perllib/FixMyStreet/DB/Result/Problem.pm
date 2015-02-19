@@ -660,6 +660,48 @@ sub body {
     return $body;
 }
 
+=head2 body_object
+
+Similar to C<body> but returns a body object, either from C<external_body>
+or from C<bodies_str>.
+
+NB: For cobrands where C<bodies_str> is a comma-separated list, this may
+return the first retrieved body at random.  (This behaviour is currently
+intended for Zurich, which uses a single body.)
+
+=cut
+
+sub body_object {
+    my ( $problem, $c ) = @_;
+    my $body;
+    if ($problem->external_body) {
+        return $c->model('DB::Body')->find({ id => $problem->external_body });
+    } else {
+        my $bodies = $problem->bodies_str_ids
+            or return;
+        return $c->model('DB::Body')->search({ id => $bodies })->single;
+    }
+}
+
+=head2 response_templates
+
+Returns all ResponseTemplates attached to this problem's bodies, in alphabetical
+order of title.
+
+=cut
+
+sub response_templates {
+    my $problem = shift;
+    return FixMyStreet::App->model('DB::ResponseTemplate')->search(
+        {
+            body_id => $problem->bodies_str_ids
+        },
+        {
+            order_by => 'title'
+        }
+    );
+}
+
 # returns true if the external id is the council's ref, i.e., useful to publish it
 # (by way of an example, the barnet send method returns a useful reference when
 # it succeeds, so that is the ref we should show on the problem report page).
