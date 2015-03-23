@@ -30,7 +30,7 @@ sub my : Path : Args(0) {
 
     my $states = $c->cobrand->on_map_default_states;
     $c->stash->{filter_status} = $c->cobrand->on_map_default_status;
-    my $status = $c->req->param('status');
+    my $status = $c->req->param('status') || '';
     if ( !defined $states || $status eq 'all' ) {
         $states = FixMyStreet::DB::Result::Problem->visible_states();
         $c->stash->{filter_status} = 'all';

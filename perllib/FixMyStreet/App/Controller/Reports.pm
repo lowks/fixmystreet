@@ -121,7 +121,7 @@ sub ward : Path : Args(2) {
     $c->stash->{stats} = $c->cobrand->get_report_stats();
 
     $c->stash->{filter_status} = $c->cobrand->on_map_default_status;
-    my $status = $c->req->param('status');
+    my $status = $c->req->param('status') || '';
     if ( !defined $c->cobrand->on_map_default_states || $status eq 'all' ) {
         $c->stash->{filter_status} = 'all';
     } elsif ( $status eq 'open' ) {
@@ -391,7 +391,7 @@ sub load_and_group_problems : Private {
     # the age of a report, so treat the filtering separately.
     # If 't' is specified, it will override 'status'.
     my $states = $c->cobrand->on_map_default_states;
-    my $status = $c->req->param('status');
+    my $status = $c->req->param('status') || '';
     if ( !defined $states || $status eq 'all' ) {
         $states = FixMyStreet::DB::Result::Problem->visible_states();
     } elsif ( $status eq 'open' ) {
