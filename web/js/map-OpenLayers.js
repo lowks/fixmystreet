@@ -470,6 +470,10 @@ $(function(){
         fixmystreet.page = 'around';
     });
 
+    // Hide the pin filter submit button. Not needed because we'll use JS
+    // to refresh the map when the filter inputs are changed.
+    $(".report-list-filters [type=submit]").hide();
+
     // Vector layers must be added onload as IE sucks
     if ($.browser.msie) {
         $(window).load(fixmystreet_onload);
