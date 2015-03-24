@@ -49,9 +49,17 @@
     param = 'p'
 %]
 
-[% FOREACH p = problems.all %]
-    [% INCLUDE problem %]
-[% END %]
+<ul class='issue-list-a full-width'>
+    [% IF problems.all %]
+        [% FOREACH p = problems.all %]
+            [% INCLUDE problem %]
+        [% END %]
+    [% ELSE %]
+        <li class="empty">
+            <p>[% loc('There are no reports to show.') %]</p>
+        </li>
+    [% END %]
+</ul>
 
 [% FOREACH u IN updates %]
     [% IF loop.first %]
@@ -77,7 +85,5 @@
 [% INCLUDE 'footer.html' %]
 
 [% BLOCK problem %]
-    [% "<ul class='issue-list-a full-width'>" IF loop.first %]
     [% INCLUDE 'reports/_list-entry.html', problem = p, no_fixed =1 %]
-    [% "</ul>" IF loop.last %]
 [% END %]
