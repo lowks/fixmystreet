@@ -9,6 +9,17 @@
     </div>
     <div id="side">
 [% ELSE %]
+    <!-- Preserve behaviour of map filters despite map not being shown -->
+    <script type="text/javascript">
+        (function($) {
+            $(function() {
+                $(".report-list-filters [type=submit]").hide();
+                $(".report-list-filters select").change(function() {
+                    $(this).closest("form").submit();
+                });
+            })
+        })(window.jQuery);
+    </script>
     <div id="skipped-map">
 [% END %]
 
