@@ -1,0 +1,24 @@
+[% IF js %]
+    <div id="form_category_row">
+        <label for="form_category">[% loc('Category') %]</label>
+        <select name="category" id="form_category" required><option>[% loc('Loading...') %]</option></select>
+    </div>
+[% ELSE %]
+    [% IF category_options.size %]
+        [% IF field_errors.category %]
+          <p class='form-error'>[% field_errors.category %]</p>
+        [% END %]
+        [% PROCESS "report/new/category.html" %]
+    [% END %]
+[% END %]
+
+<div class="unresponsive-council-warning">
+    <h1>Important message</h1>
+    <p>
+        <span class="unresponsive-council">This council</span>
+        doesn’t accept
+        <span class="refused-category">this type of report</span>.
+    </p>
+    <p>We can make your report public, but we can’t send it to the council.</p>
+    <a href="/unresponsive_council">What can I do instead?</a>
+</div>

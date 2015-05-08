@@ -61,6 +61,10 @@ sub council : Global : Args(0) {
     my ( $self, $c ) = @_;
 }
 
+sub unresponsive_council : Global : Args(0) {
+    my ( $self, $c ) = @_;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
