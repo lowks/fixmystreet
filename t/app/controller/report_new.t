@@ -462,7 +462,7 @@ foreach my $test (
         };
 
         # check that we got the errors expected
-        is_deeply $mech->page_errors, $test->{errors}, "check errors";
+        is_deeply [ sort @{$mech->page_errors} ], [ sort @{$test->{errors}} ], "check errors";
 
         # check that fields have changed as expected
         my $new_values = {

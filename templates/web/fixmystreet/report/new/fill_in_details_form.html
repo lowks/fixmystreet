@@ -57,24 +57,8 @@
           [% TRY %][% PROCESS 'report/new/inline-tips.html' %][% CATCH file %][% END %]
 
           [% IF need_to_show_category_selector %]
-              [% IF js %]
-                  <div id="form_category_row">
-                      <label for="form_category">[% loc('Category') %]</label>
-                      <select name="category" id="form_category" required><option>[% loc('Loading...') %]</option></select>
-                  </div>
-              [% ELSE %]
-                  [% IF category_options.size %]
-                      [% IF field_errors.category %]
-                        <p class='form-error'>[% field_errors.category %]</p>
-                      [% END %]
-                      [% PROCESS "report/new/category.html" %]
-                  [% END %]
-              [% END %]
+              [% PROCESS "report/new/category_wrapper.html" %]
           [% END %]
-
-          [%- IF category_extras %]
-            [% PROCESS "report/new/category_extras.html" %]
-          [%- END %]
 
           [% TRY %][% PROCESS 'report/new/after_category.html' %][% CATCH file %][% END %]
 
