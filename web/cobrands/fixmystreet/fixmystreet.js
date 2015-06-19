@@ -248,17 +248,6 @@ $(function(){
         $('<p id="sub_map_links" />').insertAfter($('#map'));
     }
 
-    // Example of how the new category interaction could work
-    $(document).on('change', '#form_category', function(){
-        if($(this).val() == '-- Pick a category --'){
-            $('.unresponsive-council-warning').slideUp(200);
-            $('.refused-category').text('this type of report');
-        } else {
-            $('.unresponsive-council-warning').slideDown(200);
-            $('.refused-category').text($(this).val().toLowerCase() + ' reports');
-        }
-    });
-
 // A sliding drawer from the bottom of the page, small version
 // that doesn't change the main content at all.
 (function($){

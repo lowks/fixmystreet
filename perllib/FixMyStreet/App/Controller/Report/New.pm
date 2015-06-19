@@ -219,14 +219,22 @@ sub category_extras_ajax : Path('category_extras') : Args(0) {
         return 1;
     }
     $c->forward('setup_categories_and_bodies');
+    $c->forward('check_for_category');
 
+    my $category = $c->stash->{category};
     my $category_extra = '';
-    if ( $c->stash->{category_extras}->{ $c->req->param('category') } && @{ $c->stash->{category_extras}->{ $c->req->param('category') } } >= 1  ) {
+    my $generate;
+    if ( $c->stash->{category_extras}->{$category} && @{ $c->stash->{category_extras}->{$category} } >= 1  ) {
         $c->stash->{report_meta} = {};
-        $c->stash->{report} = { category => $c->req->param('category') };
-        $c->stash->{category_extras} = { $c->req->param('category' ) => $c->stash->{category_extras}->{ $c->req->param('category') } };
-
-        $category_extra= $c->render_fragment( 'report/new/category_extras.html');
+        $c->stash->{category_extras} = { $category => $c->stash->{category_extras}->{$category} };
+        $generate = 1;
+    }
+    if ($c->stash->{unresponsive}->{$category}) {
+        $generate = 1;
+    }
+    if ($generate) {
+        $c->stash->{report} = { category => $category };
+        $category_extra = $c->render_fragment( 'report/new/category_extras.html');
     }
 
     my $body = JSON->new->utf8(1)->encode(
@@ -603,6 +611,7 @@ sub setup_categories_and_bodies : Private {
     my %category_extras  = ();       # extra fields to fill in for open311
     my %non_public_categories =
       ();    # categories for which the reports are not public
+    $c->stash->{unresponsive} = {};
 
     # FIXME - implement in cobrand
     if ( $c->cobrand->moniker eq 'emptyhomes' ) {
@@ -639,6 +648,9 @@ sub setup_categories_and_bodies : Private {
                 my $metas = $contact->get_extra_fields;
                 $category_extras{ $contact->category } = $metas
                     if scalar @$metas;
+
+                my $unresponsive = $contact->get_extra_metadata('unresponsive');
+                $c->stash->{unresponsive}{$contact->category} = $contact->body_id if $unresponsive;
 
                 $non_public_categories{ $contact->category } = 1 if $contact->non_public;
             }

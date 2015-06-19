@@ -1,6 +1,21 @@
 <div id="category_meta">
+    [%- category = report.category -%]
+
+    [%- IF unresponsive.$category %]
+    [%- SET body_id = unresponsive.$category %]
+    <div class="unresponsive-council-warning">
+        <h1>Important message</h1>
+        <p>
+            <span class="unresponsive-council">[% bodies.$body_id.name %]</span>
+            doesn’t accept
+            <span class="refused-category">[% category | html %]</span> reports.
+        </p>
+        <p>We can make your report public, but we can’t send it to the council.</p>
+        <a href="/unresponsive?body=[% body_id %]">What can I do instead?</a>
+    </div>
+    [%- END %]
+
     [%- IF report_meta %]
-    [%- category = report.category %]
     <h4>Additional Information</h4>
         [%- FOR meta IN category_extras.$category %]
         [%- meta_name = meta.code -%]
