@@ -61,8 +61,19 @@ sub council : Global : Args(0) {
     my ( $self, $c ) = @_;
 }
 
-sub unresponsive_council : Global : Args(0) {
+sub unresponsive : Global : Args(0) {
     my ( $self, $c ) = @_;
+    my $body = $c->stash->{body} = $c->model('DB::Body')->find({ id => $c->req->param('body') })
+        or $c->detach( '/page_error_404_not_found' );
+
+    my @contacts = $c->model('DB::Contact')->not_deleted->search( { body_id => $body->id } )->all;
+    my $any_unresponsive = 0;
+    foreach my $contact (@contacts) {
+        my $unresponsive = $contact->get_extra_metadata('unresponsive');
+        $any_unresponsive = 1 if $unresponsive;
+    }
+
+    $c->detach( '/page_error_404_not_found' ) unless $any_unresponsive;
 }
 
 __PACKAGE__->meta->make_immutable;
