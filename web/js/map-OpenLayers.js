@@ -29,6 +29,10 @@ function fixmystreet_update_pin(lonlat) {
             if ( lb.length === 0 ) { lb = $('#form_name').prev(); }
             lb.before(data.extra_name_info);
         }
+        var category_select = $("select#form_category");
+        if (category_select.val() != '-- Pick a category --') {
+            category_select.change();
+        }
     });
 
     if (!$('#side-form-error').is(':visible')) {
