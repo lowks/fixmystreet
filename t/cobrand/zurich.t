@@ -743,12 +743,8 @@ subtest 'email images to external partners' => sub {
         $mech->clear_emails_ok;
         send_reports_for_zurich();
 
-        my $email = $mech->get_email;
-
-        # TODO factor out with t/app/helpers/send_email.t
-        my $email_as_string = $email->as_string;
-        ok $email_as_string =~ s{\s+Date:\s+\S.*?$}{}xmsg, "Found and stripped out date";
-        ok $email_as_string =~ s{\s+Message-ID:\s+\S.*?$}{}xmsg, "Found and stripped out message ID (contains epoch)";
+        my @emails = $mech->get_email;
+        my $email_as_string = $mech->get_first_email(@emails);
         my ($boundary) = $email_as_string =~ /boundary="([A-Za-z0-9.]*)"/ms;
         my $changes = $email_as_string =~ s{$boundary}{}g;
         is $changes, 4, '4 boundaries'; # header + 3 around the 2x parts (text + 1 image)
