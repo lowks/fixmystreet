@@ -17,6 +17,9 @@ use Catalyst::Test 'FixMyStreet::App';
 use Email::Send::Test;
 use Path::Tiny;
 
+use FixMyStreet::TestMech;
+my $mech = FixMyStreet::TestMech->new;
+
 my $c = ctx_request("/");
 
 # set some values in the stash
@@ -34,7 +37,7 @@ my @emails = Email::Send::Test->emails;
 is scalar(@emails), 1, "caught one email";
 
 # Get the email, check it has a date and then strip it out
-my $email_as_string = get_first_email(@emails);
+my $email_as_string = $mech->get_first_email(@emails);
 
 my $expected_email_content =   path(__FILE__)->parent->child('send_email_sample.txt')->slurp;
 my $name = FixMyStreet->config('CONTACT_NAME');
@@ -75,10 +78,10 @@ subtest 'MIME attachments' => sub {
          ]
         } ), "sent an email with MIME attachments";
 
-    @emails = Email::Send::Test->emails;
+    @emails = $mech->get_email;
     is scalar(@emails), 1, "caught one email";
 
-    my $email_as_string = get_first_email(@emails);
+    my $email_as_string = $mech->get_first_email(@emails);
 
     my ($boundary) = $email_as_string =~ /boundary="([A-Za-z0-9.]*)"/ms;
     my $changes = $email_as_string =~ s{$boundary}{}g;
@@ -97,11 +100,3 @@ subtest 'MIME attachments' => sub {
 };
 
 done_testing;
-
-sub get_first_email {
-    my $email = shift or do { fail 'No email retrieved'; return };
-    my $email_as_string = $email->as_string;
-    ok $email_as_string =~ s{\s+Date:\s+\S.*?$}{}xmsg, "Found and stripped out date";
-    ok $email_as_string =~ s{\s+Message-ID:\s+\S.*?$}{}xmsg, "Found and stripped out message ID (contains epoch)";
-    return $email_as_string;
-}
