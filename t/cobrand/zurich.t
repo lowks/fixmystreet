@@ -772,7 +772,7 @@ subtest 'time_spent' => sub {
     }, sub {
         my $report = $reports[0];
 
-        is get_time_spent($report), 0, '0 minutes spent';
+        is $report->get_time_spent, 0, '0 minutes spent';
         $report->update({ state => 'in progress' });
         $mech->get_ok( '/admin/report_edit/' . $report->id );
         $mech->form_with_fields( 'time_spent' );
@@ -780,16 +780,11 @@ subtest 'time_spent' => sub {
             with_fields => {
                 time_spent => 10,
             } });
-        is get_time_spent($report), 10, '10 minutes spent';
+        is $report->get_time_spent, 10, '10 minutes spent';
     };
 };
 
 $mech->log_out_ok;
-
-sub get_time_spent {
-    my $report = shift;
-    return $report->admin_log_entries->get_column('time_spent')->sum // 0;
-}
 
 END {
     $mech->delete_body($subdivision);
