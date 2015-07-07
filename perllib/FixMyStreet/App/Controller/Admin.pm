@@ -838,6 +838,9 @@ sub templates : Path('templates') : Args(0) {
 sub templates_view : Path('templates') : Args(1) {
     my ($self, $c, $body_id) = @_;
 
+    $c->detach( '/page_error_404_not_found' )
+        unless $c->cobrand->moniker eq 'zurich';
+
     # e.g. for admin
 
     my $body = $c->model('DB::Body')->find($body_id)
@@ -848,6 +851,9 @@ sub templates_view : Path('templates') : Args(1) {
 
 sub template_edit : Path('templates') : Args(2) {
     my ( $self, $c, $body_id, $template_id ) = @_;
+
+    $c->detach( '/page_error_404_not_found' )
+        unless $c->cobrand->moniker eq 'zurich';
 
     my $body = $c->model('DB::Body')->find($body_id)
         or $c->detach( '/page_error_404_not_found' );
